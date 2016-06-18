@@ -84,6 +84,7 @@ class GraphAPI(object):
         self.access_token = access_token
         self.timeout = timeout
         self.proxies = proxies
+        self.session = requests.Session()
 
         if version:
             version_regex = re.compile("^\d\.\d$")
@@ -196,7 +197,7 @@ class GraphAPI(object):
         """Fetches the current version number of the Graph API being used."""
         args = {"access_token": self.access_token}
         try:
-            response = requests.request(
+            response = self.session.request(
                 "GET",
                 FACEBOOK_GRAPH_URL + self.version + "/me",
                 params=args,
@@ -234,7 +235,7 @@ class GraphAPI(object):
                 args["access_token"] = self.access_token
 
         try:
-            response = requests.request(method or "GET",
+            response = self.session.request(method or "GET",
                                         FACEBOOK_GRAPH_URL + path,
                                         timeout=self.timeout,
                                         params=args,
